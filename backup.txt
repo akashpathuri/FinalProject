@@ -1,0 +1,115 @@
+import utility
+import random
+import matplotlib.pyplot as plt
+from tqdm import tqdm
+import numpy as np
+import plotly.graph_objects as go
+
+class naive_bayes:
+    def __init__(self, image_size, feature_size, classfications):
+		self.image_size = image_size
+		self.feature_size = feature_size
+		self.classfications = classfications
+		self.number_of_features = (image_size[0] * image_size[1]) // (feature_size * feature_size)
+
+		self.bayes_network = []
+		for c in range(classfications):
+			classfier_probabilities = []
+			for f in range(self.number_of_features):
+				feature_probabilities = [1.0]*(feature_size*feature_size + 1)
+				classfier_probabilities.append(feature_probabilities)
+			self.bayes_network.append(classfier_probabilities)
+
+		self.prior_probabilities = [1.0]*(classfications)
+  
+    def main():
+		image_size = [70, 60]
+		feature_size = 5
+		classfications = 2
+		number_of_features = (image_size[0] * image_size[1]) // (feature_size * feature_size)
+	
+		bayes_network = []
+		for c in range(classfications):
+			classfier_probabilities = []
+			for f in range(number_of_features):
+				feature_probabilities = [1.0]*(feature_size*feature_size + 1)
+				classfier_probabilities.append(feature_probabilities)
+			bayes_network.append(classfier_probabilities)
+
+		prior_probabilities = [1.0]*(classfications)
+	
+		#Training loop
+		images = utility.load_data_file("facedata/facedatatrain", image_size)
+		image_labels = utility.load_data_labels("facedata/facedatatrainlabels")
+		training_results = []
+		training_gradient = []
+		
+		epochs = 50
+		for epoch in tqdm(range(epochs)):
+			for i, image in enumerate(images):
+				image_result, bayes_network, prior_probabilities = run_perceptron(image, image_labels[i], bayes_network, prior_probabilities, feature_size, epoch > 0)
+
+				if image_result == image_labels[i]:
+					training_results.append(1)
+				else: 
+					training_results.append(0)
+			training_gradient.append(np.mean(training_results) * 100)
+			training_results = []
+
+		plt.plot(training_gradient)
+	
+		images = utility.load_data_file("facedata/facedatatest", image_height)
+		image_labels = utility.load_data_labels("facedata/facedatatestlabels")
+		testing_results = []
+		for i, image in enumerate(images):
+			image_result, _, _ = run_perceptron(image, image_labels[i], bayes_network, prior_probabilities, feature_size, epoch > 0)
+			if image_result == image_labels[i]:
+				testing_results.append(1)
+			else: 
+				testing_results.append(0)
+
+		fig = go.Figure(go.Indicator(
+		mode = "gauge+number",
+		value = np.mean(testing_results) * 100,
+		title = {'text': "Accuracy"}))
+
+		fig.show()
+		plt.title("Accuracy of Face Perceptron over Training Cycle")		
+		plt.show()
+
+    
+    
+	def train_perceptron(bayes_network, prior_probabilities, features, image_label, image_result):
+		prior_probabilities[image_label] += 1
+		for i, feature in enumerate(features):
+			bayes_network[image_label][i][feature] +=1
+	
+		return bayes_network, prior_probabilities
+
+	def activation(weighted_probabilities):
+		max_probablity = weighted_probabilities[0]
+		max_result = 0
+		for value, probablity in enumerate(weighted_probabilities):
+			if probablity>max_probablity:
+				max_probablity = probablity
+				max_result = value
+		return max_result
+
+	def run_perceptron(face_image, image_label, bayes_network, prior_probabilities, feature_size, training):
+		features = utility.get_feature_values(face_image, feature_size)
+		weighted_probabilities = []
+		total_sample = float(sum(prior_probabilities))
+		for i, prior in enumerate(prior_probabilities):
+			total_probablity = float(prior / total_sample);
+			for j, feature in enumerate(features):
+				total_probablity *= float(bayes_network[i][j][feature] / total_sample)
+			weighted_probabilities.append(total_probablity)
+
+		
+		image_result = activation(weighted_probabilities)
+		if (training):
+			bayes_network, prior_probabilities = train_perceptron(bayes_network, prior_probabilities, features, image_label, image_result)
+		
+		return image_result, bayes_network, prior_probabilities
+
+	
