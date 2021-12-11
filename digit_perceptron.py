@@ -64,7 +64,6 @@ def main():
 	digit_image_labels = utility.load_data_labels("digitdata/traininglabels")
 	training_results = []
 	training_gradient = []
-	#print(perceptron_weights)
 	
 	epochs = 50
 	for epoch in tqdm(range(epochs)):
@@ -77,15 +76,12 @@ def main():
 				training_results.append(0)
 		training_gradient.append(np.mean(training_results) * 100)
 		training_results = []
-
-	print(perceptron_weights)
 	plt.plot(training_gradient)
  
 	#Testing loop
 	digit_images = utility.load_data_file("digitdata/testimages", image_height)
 	digit_image_labels = utility.load_data_labels("digitdata/testlabels")
 	testing_results = []
-	print(perceptron_weights)
 	for i, digit_image in enumerate(digit_images):
 		image_result, _ = run_perceptron(digit_image, digit_image_labels[i], perceptron_weights, feature_size, False)
 		if image_result == digit_image_labels[i]:
@@ -99,6 +95,7 @@ def main():
     title = {'text': "Accuracy"}))
 
 	fig.show()
+	plt.title("Accuracy of Digit Perceptron over Training Cycle")
 	plt.show()
 
 

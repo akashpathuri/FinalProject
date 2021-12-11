@@ -87,6 +87,7 @@ def main():
     title = {'text': "Accuracy"}))
 
 	fig.show()
+	plt.title("Accuracy of Face Perceptron over Training Cycle")		
 	plt.show()
 
 
