@@ -1,4 +1,4 @@
-def load_data_file(filename):
+def load_data_file(filename, height):
 	file = open(filename)
 	images = []
 	line_number = 0
@@ -10,7 +10,7 @@ def load_data_file(filename):
 		current_image.append(characters)
 		line_number += 1
 	
-		if (line_number == 70):
+		if (line_number == height):
 			images.append(current_image)
 			line_number = 0
 			current_image = []
@@ -26,9 +26,9 @@ def load_data_labels(filename):
 	file.close()
 	return labels
 
-def get_feature_values(face_image):
+def get_feature_values(face_image, feature_size):
 	feature_values = []
-	features = extract_features(face_image, 10)
+	features = extract_features(face_image, feature_size)
 	for feature in features:
 		feature_value = compute_features(feature)
 		feature_values.append(feature_value)
