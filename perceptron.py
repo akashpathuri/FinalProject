@@ -28,7 +28,8 @@ class perceptron:
         training_gradient = []
         
         epochs = 50
-        for epoch in tqdm(range(epochs)):
+        # for epoch in tqdm(range(epochs)):
+        for epoch in range(epochs):
             for i, image in enumerate(images):
                 image_result = self.run_perceptron(image, image_labels[i], epoch > 0)
                 if image_result == image_labels[i]:
@@ -37,9 +38,9 @@ class perceptron:
                     training_results.append(0)
             training_gradient.append(np.mean(training_results) * 100)
             training_results = []
-        plt.plot(training_gradient)
-        plt.title("Accuracy of Face Perceptron over Training Cycle")
-        plt.show()
+        # plt.plot(training_gradient)
+        # plt.title("Accuracy of Face Perceptron over Training Cycle")
+        # plt.show()
 
     def test_dataSet(self, images, image_labels):
         testing_results = []
@@ -49,13 +50,15 @@ class perceptron:
                 testing_results.append(1)
             else: 
                 testing_results.append(0)
+
+        return np.mean(testing_results) * 100
         
-        fig = go.Figure(go.Indicator(
-		mode = "gauge+number",
-		value = np.mean(testing_results) * 100,
-		title = {'text': "Accuracy"}))
+        # fig = go.Figure(go.Indicator(
+		# mode = "gauge+number",
+		# value = np.mean(testing_results) * 100,
+		# title = {'text': "Accuracy"}))
         
-        fig.show()
+        # fig.show()
         
     
     def train_perceptron(self,features, image_label, image_result):

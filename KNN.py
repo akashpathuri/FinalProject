@@ -23,7 +23,8 @@ class KNN:
         training_gradient = []
         
         epochs = 1
-        for epoch in tqdm(range(epochs)):
+        # for epoch in tqdm(range(epochs)):
+        for epoch in range(epochs):
             for i, image in enumerate(images):
                 image_result = self.run_perceptron(image, image_labels[i], True)
                 if image_result == image_labels[i]:
@@ -32,25 +33,28 @@ class KNN:
                     training_results.append(0)
             training_gradient.append(np.mean(training_results) * 100)
             training_results = []
-        plt.plot(training_gradient)
-        plt.title("Accuracy of Face Perceptron over Training Cycle")
-        plt.show()
+        # plt.plot(training_gradient)
+        # plt.title("Accuracy of Face Perceptron over Training Cycle")
+        # plt.show()
 
     def test_dataSet(self, images, image_labels):
         testing_results = []
-        for i, image in enumerate(tqdm(images)):
+        # for i, image in enumerate(tqdm(images)):
+        for i, image in enumerate(images):
             image_result = self.run_perceptron(image, image_labels[i], False)
             if image_result == image_labels[i]:
                 testing_results.append(1)
             else: 
                 testing_results.append(0)
         
-        fig = go.Figure(go.Indicator(
-		mode = "gauge+number",
-		value = np.mean(testing_results) * 100,
-		title = {'text': "Accuracy"}))
+        return np.mean(testing_results) * 100
+
+        # fig = go.Figure(go.Indicator(
+		# mode = "gauge+number",
+		# value = np.mean(testing_results) * 100,
+		# title = {'text': "Accuracy"}))
         
-        fig.show()
+        # fig.show()
                 
     def activation(self, nearest_labels):
         relevant_k = len(nearest_labels) if self.k > len(nearest_labels) else self.k

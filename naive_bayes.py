@@ -30,7 +30,8 @@ class naive_bayes:
         training_gradient = []
         
         epochs = 50
-        for epoch in tqdm(range(epochs)):
+        # for epoch in tqdm(range(epochs)):
+        for epoch in range(epochs):
             for i, image in enumerate(images):
                 image_result = self.run_perceptron(image, image_labels[i], epoch > 0)
                 if image_result == image_labels[i]:
@@ -39,9 +40,9 @@ class naive_bayes:
                     training_results.append(0)
             training_gradient.append(np.mean(training_results) * 100)
             training_results = []
-        plt.plot(training_gradient)
-        plt.title("Accuracy of Face Perceptron over Training Cycle")
-        plt.show()
+        # plt.plot(training_gradient)
+        # plt.title("Accuracy of Face Perceptron over Training Cycle")
+        # plt.show()
 
     
     def test_dataSet(self, images, image_labels):
@@ -53,12 +54,14 @@ class naive_bayes:
             else: 
                 testing_results.append(0)
         
-        fig = go.Figure(go.Indicator(
-		mode = "gauge+number",
-		value = np.mean(testing_results) * 100,
-		title = {'text': "Accuracy"}))
+        return np.mean(testing_results) * 100
+
+        # fig = go.Figure(go.Indicator(
+		# mode = "gauge+number",
+		# value = np.mean(testing_results) * 100,
+		# title = {'text': "Accuracy"}))
         
-        fig.show()
+        # fig.show()
         
     
     def train_perceptron(self, features, image_label):
